@@ -10,6 +10,7 @@ import AdvancedConfig from '../../../../generalTemplates/\_ocean_advanced_config
 import SonarcloudAnalysisBlueprint from "/docs/build-your-software-catalog/custom-integration/webhook/examples/resources/sonarqube/\_example_sonarcloud_analysis_blueprint.mdx";
 import SonarcloudAnalysisConfiguration from "/docs/build-your-software-catalog/custom-integration/webhook/examples/resources/sonarqube/\_example_sonarcloud_analysis_configuration.mdx";
 import PortApiRegionTip from "/docs/generalTemplates/_port_region_parameter_explanation_template.md"
+import OceanSaasInstallation from "/docs/build-your-software-catalog/sync-data-to-catalog/templates/_ocean_saas_installation.mdx"
 
 # SonarQube
 
@@ -33,7 +34,13 @@ Choose one of the following installation methods:
 
 <Tabs groupId="installation-methods" queryString="installation-methods">
 
-<TabItem value="real-time-always-on" label="Real Time & Always On" default>
+<TabItem value="hosted-by-port" label="Hosted by Port" default>
+
+<OceanSaasInstallation/>
+
+</TabItem>
+
+<TabItem value="real-time-always-on" label="Real Time & Always On">
 
 Using this installation option means that the integration will be able to update Port in real time using webhooks.
 
@@ -66,6 +73,7 @@ helm upgrade --install my-sonarqube-integration port-labs/port-ocean \
   --set port.clientSecret="PORT_CLIENT_SECRET"  \
   --set port.baseUrl="https://api.getport.io"  \
   --set initializePortResources=true  \
+  --set sendRawDataExamples=true  \
   --set scheduledResyncInterval=120  \
   --set integration.identifier="my-sonarqube-integration"  \
   --set integration.type="sonarqube"  \
@@ -165,6 +173,8 @@ kubectl apply -f my-ocean-sonarqube-integration.yaml
 </TabItem>
 </Tabs>
 
+<AdvancedConfig/>
+
 </TabItem>
 
 <TabItem value="one-time" label="Scheduled">
@@ -257,6 +267,7 @@ pipeline {
                             docker run -i --rm --platform=linux/amd64 \
                                 -e OCEAN__EVENT_LISTENER='{"type":"ONCE"}' \
                                 -e OCEAN__INITIALIZE_PORT_RESOURCES=true \
+                                -e OCEAN__SEND_RAW_DATA_EXAMPLES=true \
                                 -e OCEAN__INTEGRATION__CONFIG__SONAR_API_TOKEN=$OCEAN__INTEGRATION__CONFIG__SONAR_API_TOKEN \
                                 -e OCEAN__INTEGRATION__CONFIG__SONAR_ORGANIZATION_ID=$OCEAN__INTEGRATION__CONFIG__SONAR_ORGANIZATION_ID \
                                 -e OCEAN__INTEGRATION__CONFIG__SONAR_IS_ON_PREMISE=$OCEAN__INTEGRATION__CONFIG__SONAR_IS_ON_PREMISE \
@@ -319,6 +330,7 @@ steps:
     docker run -i --rm \
     -e OCEAN__EVENT_LISTENER='{"type":"ONCE"}' \
     -e OCEAN__INITIALIZE_PORT_RESOURCES=true \
+    -e OCEAN__SEND_RAW_DATA_EXAMPLES=true \
     -e OCEAN__INTEGRATION__CONFIG__SONAR_API_TOKEN=$(OCEAN__INTEGRATION__CONFIG__SONAR_API_TOKEN) \
     -e OCEAN__INTEGRATION__CONFIG__SONAR_ORGANIZATION_ID=$(OCEAN__INTEGRATION__CONFIG__SONAR_ORGANIZATION_ID) \
     -e OCEAN__INTEGRATION__CONFIG__SONAR_IS_ON_PREMISE=$(OCEAN__INTEGRATION__CONFIG__SONAR_IS_ON_PREMISE) \
@@ -374,6 +386,7 @@ ingest_data:
       docker run -i --rm --platform=linux/amd64 \
         -e OCEAN__EVENT_LISTENER='{"type":"ONCE"}' \
         -e OCEAN__INITIALIZE_PORT_RESOURCES=true \
+        -e OCEAN__SEND_RAW_DATA_EXAMPLES=true \
         -e OCEAN__INTEGRATION__CONFIG__SONAR_API_TOKEN=$OCEAN__INTEGRATION__CONFIG__SONAR_API_TOKEN \
         -e OCEAN__INTEGRATION__CONFIG__SONAR_ORGANIZATION_ID=$OCEAN__INTEGRATION__CONFIG__SONAR_ORGANIZATION_ID \
         -e OCEAN__INTEGRATION__CONFIG__SONAR_IS_ON_PREMISE=$OCEAN__INTEGRATION__CONFIG__SONAR_IS_ON_PREMISE \
@@ -391,11 +404,11 @@ ingest_data:
 
 <PortApiRegionTip/>
 
+<AdvancedConfig/>
+
 </TabItem>
 
 </Tabs>
-
-<AdvancedConfig/>
 
 ## Ingesting SonarQube objects
 
